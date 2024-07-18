@@ -17,7 +17,7 @@ export const NavigateToUserLocation = (): JSX.Element => {
 
   return (
     <button
-      className='absolute top-3 right-3 text-white rounded-full p-4 bg-purple-300 bg-opacity-20  hover:bg-purple-600  active:bg-purple-700 transition-colors'
+      className='z-[100] absolute top-3 right-3 text-white rounded-full p-4 bg-purple-300 bg-opacity-20  hover:bg-purple-600  active:bg-purple-700 transition-colors'
       onClick={handleClick}
     >
       <LocaleDefineIcon width='32' height='32' />
