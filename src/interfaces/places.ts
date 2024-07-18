@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LOCATION_ACTIONS } from "../reducers";
+import { getPlacesByQueryArgs } from "./API";
 
-export interface IPlacesContextProps extends IPlacesState { }
+export interface IPlacesContextProps extends IPlacesState {
+  getPlacesByQuery: (args: getPlacesByQueryArgs) => void
+}
 
 export interface IPlacesState {
   isLoading: boolean;

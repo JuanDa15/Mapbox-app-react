@@ -1,7 +1,12 @@
 import { createContext, PropsWithChildren, useEffect, useReducer } from 'react';
 import { placesReducer } from '../reducers';
 import { getLocation } from '../helpers';
-import { IPlacesContextProps, IPlacesState } from '../interfaces';
+import {
+  getPlacesByQueryArgs,
+  IPlacesContextProps,
+  IPlacesState,
+} from '../interfaces';
+import forwardSearchApi from '../API/forward-geolocation';
 
 const INITIAL_STATE: IPlacesState = {
   isLoading: true,
@@ -27,10 +32,22 @@ export const PlacesProvider = ({ children }: PropsWithChildren) => {
     initializeLocation();
   }, []);
 
+  const getPlacesByQuery = async ({ q, limit = '5' }: getPlacesByQueryArgs) => {
+    const { data } = await forwardSearchApi.get('', {
+      params: {
+        q,
+        limit,
+        proximity: state.location?.join(','),
+      },
+    });
+    console.log(data);
+  };
+
   return (
     <PlacesContext.Provider
       value={{
         ...state,
+        getPlacesByQuery,
       }}
     >
       {children}
