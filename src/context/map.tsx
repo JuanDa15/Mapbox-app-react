@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useReducer } from 'react';
 import { mapReducer } from '../reducers';
-import { Map } from 'mapbox-gl';
+import { Map, Marker, Popup } from 'mapbox-gl';
 import { IMapContextProps, MapState } from '../interfaces';
 
 const MAP_INITIAL_STATE: MapState = {
@@ -16,6 +16,16 @@ export function MapProvider({ children }: PropsWithChildren) {
   const [state, dispatch] = useReducer(mapReducer, MAP_INITIAL_STATE);
 
   const setMap = (map: Map) => {
+    const popup = new Popup().setHTML(`
+      <h4 class="text-black">You are here</h4>  
+    `);
+    new Marker({
+      color: '#61dadb',
+    })
+      .setLngLat(map.getCenter())
+      .setPopup(popup)
+      .addTo(map);
+
     dispatch({
       type: 'SET_MAP',
       payload: map,

@@ -13,9 +13,9 @@ export const MapView = (): JSX.Element => {
     if (!mapRef.current) return;
     const map = new mapboxgl.Map({
       container: mapRef.current! as HTMLElement, // container ID
-      style: 'mapbox://styles/mapbox/streets-v12', // style URL
+      style: 'mapbox://styles/mapbox/dark-v10', // style URL
       center: location, // starting position [lng, lat]
-      zoom: 9, // starting zoom
+      zoom: 16, // starting zoom
     });
     setMap(map);
     // eslint-disable-next-line react-hooks/exhaustive-deps

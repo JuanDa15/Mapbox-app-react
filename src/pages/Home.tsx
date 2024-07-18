@@ -1,9 +1,10 @@
-import { MapView } from '../components/MapView';
+import { MapView, NavigateToUserLocation } from '../components';
 
 export const HomePage = (): JSX.Element => {
   return (
     <>
       <MapView />
+      <NavigateToUserLocation />
     </>
   );
 };
