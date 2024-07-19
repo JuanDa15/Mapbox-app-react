@@ -1,7 +1,9 @@
-import { IPlacesState, LocationAction } from "../interfaces";
+import { Feature, IPlacesState, LocationAction } from "../interfaces";
 
 export const LOCATION_ACTIONS = {
   SET_LOCATION: 'SET_LOCATION',
+  SET_LOADING: 'SET_LOADING',
+  SET_SEARCHED_PLACES: 'SET_SEARCHED_PLACES',
 }
 
 export const LOCATION_REDUCER_ACTIONS = {
@@ -9,6 +11,15 @@ export const LOCATION_REDUCER_ACTIONS = {
     ...state,
     location: payload,
     isLoading: false
+  }),
+  [LOCATION_ACTIONS.SET_LOADING]: (state: IPlacesState): IPlacesState => ({
+    ...state,
+    isLoadingData: true
+  }),
+  [LOCATION_ACTIONS.SET_SEARCHED_PLACES]: (state: IPlacesState, payload: Feature[]): IPlacesState => ({
+    ...state,
+    searchedPlaces: payload,
+    isLoadingData: false
   }),
 }
 

@@ -3,14 +3,13 @@ import { LocaleDefineIcon } from '../icons';
 import { MapContext, PlacesContext } from '../context';
 
 export const NavigateToUserLocation = (): JSX.Element => {
-  const { isMapReady, map } = useContext(MapContext);
+  const { isMapReady, navigateToPlace } = useContext(MapContext);
   const { location } = useContext(PlacesContext);
 
   const handleClick = () => {
-    map?.flyTo({
-      center: location, // starting position
-      animate: true,
-    });
+    if (!location) return;
+    const [lng, lat] = location;
+    navigateToPlace([lng, lat]);
   };
 
   if (!isMapReady) return <></>;

@@ -1,8 +1,12 @@
-import { Map } from "mapbox-gl"
+import { Map, Marker } from "mapbox-gl"
 import { MapAction, MapState } from "../interfaces/map"
 
 export const MAP_ACTIONS = {
-  SET_MAP: 'SET_MAP'
+  SET_MAP: 'SET_MAP',
+  SET_MARKERS: 'SET_MARKERS',
+  SET_DIRECTION: 'SET_DIRECTION',
+  CLEAR_DIRECTIONS: 'CLEAR_DIRECTIONS',
+  SET_DIRECTIONS_MARKERS: 'SET_DIRECTIONS_MARKERS'
 }
 
 export const MAP_REDUCER_ACTIONS = {
@@ -10,6 +14,26 @@ export const MAP_REDUCER_ACTIONS = {
     ...state,
     map: payload,
     isMapReady: true
+  }),
+  [MAP_ACTIONS.SET_MARKERS]: (state: MapState, payload: Marker[]): MapState => ({
+    ...state,
+    markers: payload
+  }),
+  [MAP_ACTIONS.SET_DIRECTION]: (state: MapState, payload: [number, number]): MapState => ({
+    ...state,
+    directions: [
+      ...state.directions,
+      payload
+    ]
+  }),
+  [MAP_ACTIONS.CLEAR_DIRECTIONS]: (state: MapState): MapState => ({
+    ...state,
+    directions: [],
+    directionsMarkers: []
+  }),
+  [MAP_ACTIONS.SET_DIRECTIONS_MARKERS]: (state: MapState, payload: Marker[]): MapState => ({
+    ...state,
+    directionsMarkers: payload
   })
 }
 

@@ -7,10 +7,13 @@ import {
   IPlacesState,
 } from '../interfaces';
 import forwardSearchApi from '../API/forward-geolocation';
+import { ForwardGeolocationResponse } from '../interfaces';
 
 const INITIAL_STATE: IPlacesState = {
   isLoading: true,
   location: undefined,
+  searchedPlaces: [],
+  isLoadingData: false,
 };
 
 export const PlacesContext = createContext<IPlacesContextProps>(
@@ -33,14 +36,21 @@ export const PlacesProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const getPlacesByQuery = async ({ q, limit = '5' }: getPlacesByQueryArgs) => {
-    const { data } = await forwardSearchApi.get('', {
+    if (q.length === 0)
+      return dispatch({ type: 'SET_SEARCHED_PLACES', payload: [] });
+
+    dispatch({ type: 'SET_LOADING' });
+    const {
+      data: { features },
+    } = await forwardSearchApi.get<ForwardGeolocationResponse>('', {
       params: {
         q,
         limit,
         proximity: state.location?.join(','),
       },
     });
-    console.log(data);
+
+    dispatch({ type: 'SET_SEARCHED_PLACES', payload: features });
   };
 
   return (

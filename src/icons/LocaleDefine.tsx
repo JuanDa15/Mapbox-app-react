@@ -1,9 +1,6 @@
 export const LocaleDefineIcon = ({
   width = '24',
   height = '24',
-}: {
-  width?: string;
-  height?: string;
 }): JSX.Element => {
   return (
     <svg
