@@ -6,13 +6,7 @@ import {
   useReducer,
 } from 'react';
 import { mapReducer } from '../reducers';
-import {
-  LngLatBounds,
-  Map,
-  Marker,
-  Popup,
-  SourceSpecification,
-} from 'mapbox-gl';
+import { Map, Marker, Popup, SourceSpecification } from 'mapbox-gl';
 import { IMapContextProps, MapState } from '../interfaces';
 import { PlacesContext } from './places';
 import { createMarker, createMarkerWithCoords } from '../helpers';
