@@ -6,7 +6,13 @@ import {
   useReducer,
 } from 'react';
 import { mapReducer } from '../reducers';
-import { Map, Marker, Popup } from 'mapbox-gl';
+import {
+  LngLatBounds,
+  Map,
+  Marker,
+  Popup,
+  SourceSpecification,
+} from 'mapbox-gl';
 import { IMapContextProps, MapState } from '../interfaces';
 import { PlacesContext } from './places';
 import { createMarker, createMarkerWithCoords } from '../helpers';
@@ -105,6 +111,40 @@ export function MapProvider({ children }: PropsWithChildren) {
     const coordsString = coords.join(';');
 
     const { data } = await directionsApi.get(coordsString);
+
+    // const bounds = new LngLatBounds();
+
+    const sourceData: SourceSpecification = {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: data.routes[0].geometry.coordinates,
+            },
+          },
+        ],
+      },
+    };
+
+    state.map?.addSource('RouteString', sourceData);
+    state.map?.addLayer({
+      id: 'RouteString',
+      type: 'line',
+      source: 'RouteString',
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round',
+      },
+      paint: {
+        'line-color': '#FF0',
+        'line-width': 5,
+      },
+    });
     console.log(data);
     console.log(coords);
   };
