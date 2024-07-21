@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { MapProvider, PlacesProvider } from './context';
+import { MapProvider, PlacesProvider, RouteProvider } from './context';
 
 import mapboxgl from 'mapbox-gl';
 
@@ -16,10 +16,12 @@ if (!navigator.geolocation) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <PlacesProvider>
-      <MapProvider>
-        <App />
-      </MapProvider>
-    </PlacesProvider>
+    <MapProvider>
+      <PlacesProvider>
+        <RouteProvider>
+          <App />
+        </RouteProvider>
+      </PlacesProvider>
+    </MapProvider>
   </React.StrictMode>
 );
