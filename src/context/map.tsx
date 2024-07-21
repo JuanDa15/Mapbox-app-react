@@ -1,23 +1,12 @@
-import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useReducer,
-} from 'react';
+import { createContext, PropsWithChildren, useReducer } from 'react';
 import { mapReducer } from '../reducers';
-import { Map, Marker, Popup, SourceSpecification } from 'mapbox-gl';
+import { Map } from 'mapbox-gl';
 import { IMapContextProps, MapState } from '../interfaces';
-import { PlacesContext } from './places';
-import { createMarker, createMarkerWithCoords } from '../helpers';
-import directionsApi from '../API/directions';
+import { createUserMarker } from '../helpers';
 
 const MAP_INITIAL_STATE: MapState = {
   map: undefined,
   isMapReady: false,
-  markers: [],
-  directions: [],
-  directionsMarkers: [],
 };
 
 export const MapContext = createContext<IMapContextProps>(
@@ -26,41 +15,6 @@ export const MapContext = createContext<IMapContextProps>(
 
 export function MapProvider({ children }: PropsWithChildren) {
   const [state, dispatch] = useReducer(mapReducer, MAP_INITIAL_STATE);
-  const { searchedPlaces } = useContext(PlacesContext);
-
-  useEffect(() => {
-    state.markers.forEach((marker) => marker.remove());
-    setMarkers([]);
-
-    const newMarkers: Marker[] = [];
-    for (const place of searchedPlaces) {
-      const marker = createMarker(place).addTo(state.map!);
-      newMarkers.push(marker);
-    }
-
-    dispatch({
-      type: 'SET_MARKERS',
-      payload: newMarkers,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchedPlaces]);
-
-  useEffect(() => {
-    state.directionsMarkers.forEach((marker) => marker.remove());
-    dispatch({ type: 'SET_DIRECTIONS_MARKERS', payload: [] });
-
-    const newMarkerDirections = [];
-    for (const direction of state.directions) {
-      const marker = createMarkerWithCoords(direction).addTo(state.map!);
-      newMarkerDirections.push(marker);
-    }
-    dispatch({ type: 'SET_DIRECTIONS_MARKERS', payload: newMarkerDirections });
-
-    if (state.directions.length < 2) return;
-
-    createRoute(state.directions);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.directions]);
 
   const navigateToPlace = ([lng, lat]: [number, number]) => {
     state.map!.flyTo({
@@ -71,76 +25,11 @@ export function MapProvider({ children }: PropsWithChildren) {
   };
 
   const setMap = (map: Map) => {
-    const popup = new Popup().setHTML(`
-      <h4 class="text-black">You are here</h4>  
-    `);
-    new Marker({
-      color: '#61dadb',
-    })
-      .setLngLat(map.getCenter())
-      .setPopup(popup)
-      .addTo(map);
-
+    createUserMarker(map.getCenter()).addTo(map);
     dispatch({
       type: 'SET_MAP',
       payload: map,
     });
-  };
-
-  const setMarkers = (markers: Marker[]) => {
-    dispatch({
-      type: 'SET_MARKERS',
-      payload: markers,
-    });
-  };
-
-  const addDirection = (coords: [number, number]) => {
-    dispatch({
-      type: 'SET_DIRECTION',
-      payload: coords,
-    });
-  };
-
-  const createRoute = async (coords: [number, number][]) => {
-    const coordsString = coords.join(';');
-
-    const { data } = await directionsApi.get(coordsString);
-
-    // const bounds = new LngLatBounds();
-
-    const sourceData: SourceSpecification = {
-      type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'LineString',
-              coordinates: data.routes[0].geometry.coordinates,
-            },
-          },
-        ],
-      },
-    };
-
-    state.map?.addSource('RouteString', sourceData);
-    state.map?.addLayer({
-      id: 'RouteString',
-      type: 'line',
-      source: 'RouteString',
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round',
-      },
-      paint: {
-        'line-color': '#FF0',
-        'line-width': 5,
-      },
-    });
-    console.log(data);
-    console.log(coords);
   };
 
   return (
@@ -148,10 +37,7 @@ export function MapProvider({ children }: PropsWithChildren) {
       value={{
         ...state,
         setMap,
-        setMarkers,
         navigateToPlace,
-        createRoute,
-        addDirection,
       }}
     >
       {children}

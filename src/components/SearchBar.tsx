@@ -1,12 +1,15 @@
 import { ChangeEventHandler, useContext, useRef } from 'react';
-import { PlacesContext } from '../context';
+import { PlacesContext, RouteContext } from '../context';
 import { SearchResults } from './SearchResults';
 
 export const SearchBar = (): JSX.Element => {
   const debounceRef = useRef<number>();
   const { getPlacesByQuery } = useContext(PlacesContext);
+  const { turnOffRouteMode, routeMode } = useContext(RouteContext);
 
   const onQueryChanged: ChangeEventHandler<HTMLInputElement> = (event) => {
+    routeMode && turnOffRouteMode();
+
     const { value } = event.target;
 
     if (debounceRef.current) {

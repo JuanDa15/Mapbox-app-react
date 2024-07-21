@@ -5,7 +5,8 @@ import { MapIcon, MapPinIcon } from '../icons';
 import { Feature } from '../interfaces';
 
 export const SearchResults = (): JSX.Element => {
-  const { isLoadingData, searchedPlaces } = useContext(PlacesContext);
+  const { isLoadingData, searchedPlaces, getRouteLocation } =
+    useContext(PlacesContext);
   const { navigateToPlace } = useContext(MapContext);
 
   const [activePlace, setActivePlace] = useState('');
@@ -47,12 +48,25 @@ export const SearchResults = (): JSX.Element => {
             <small>{item.properties.place_formatted}</small>
           </p>
 
-          <button
-            onClick={handleClick(item)}
-            className='py-2 px-3 rounded-full bg-teal-700 text-white mt-2 w-full hover:bg-teal-600 hover:text-teal-200 transition-colors'
-          >
-            <b>Navigate to</b>
-          </button>
+          <div className='mt-2 flex flex-row items-center justify-center gap-1'>
+            <button
+              onClick={handleClick(item)}
+              className='py-2 px-3 rounded-full bg-teal-700 text-white w-full hover:bg-teal-600 hover:text-teal-200 transition-colors'
+            >
+              <b>Navigate to</b>
+            </button>
+            <button
+              className='p-2 bg-yellow-600 rounded-full hover:bg-yellow-600 active:bg-yellow-700'
+              onClick={() =>
+                getRouteLocation([
+                  item.geometry.coordinates[0],
+                  item.geometry.coordinates[1],
+                ])
+              }
+            >
+              <MapPinIcon />
+            </button>
+          </div>
         </li>
       ))}
     </ul>

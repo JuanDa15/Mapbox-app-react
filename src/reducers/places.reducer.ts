@@ -1,9 +1,12 @@
+import { Marker } from "mapbox-gl";
 import { Feature, IPlacesState, LocationAction } from "../interfaces";
 
 export const LOCATION_ACTIONS = {
   SET_LOCATION: 'SET_LOCATION',
   SET_LOADING: 'SET_LOADING',
   SET_SEARCHED_PLACES: 'SET_SEARCHED_PLACES',
+  TURN_OFF_SEARCH_MODE: 'TURN_OFF_SEARCH_MODE',
+  SET_MARKERS: 'SET_MARKERS'
 }
 
 export const LOCATION_REDUCER_ACTIONS = {
@@ -19,7 +22,18 @@ export const LOCATION_REDUCER_ACTIONS = {
   [LOCATION_ACTIONS.SET_SEARCHED_PLACES]: (state: IPlacesState, payload: Feature[]): IPlacesState => ({
     ...state,
     searchedPlaces: payload,
-    isLoadingData: false
+    isLoadingData: false,
+    searchMode: (payload.length > 0) ? true : false
+  }),
+  [LOCATION_ACTIONS.TURN_OFF_SEARCH_MODE]: (state: IPlacesState): IPlacesState => ({
+    ...state,
+    searchMode: false,
+    isLoadingData: false,
+    searchedPlaces: []
+  }),
+  [LOCATION_ACTIONS.SET_MARKERS]: (state: IPlacesState, payload: Marker[]): IPlacesState => ({
+    ...state,
+    markers: payload
   }),
 }
 

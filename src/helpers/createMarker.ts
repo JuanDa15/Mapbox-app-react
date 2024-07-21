@@ -1,4 +1,4 @@
-import { Marker, Popup } from "mapbox-gl";
+import { LngLat, Marker, Popup } from "mapbox-gl";
 import { Feature } from "../interfaces";
 
 export function createMarker(place: Feature, color?: string) {
@@ -19,4 +19,23 @@ export function createMarkerWithCoords([lng, lat]: [number, number], color?: str
     color: color ?? '#ff55ff',
   }).setLngLat([lng, lat])
   return marker;
+}
+
+export function createUserMarker(center: LngLat): Marker {
+  const popup = new Popup().setHTML(`
+    <h4 class="text-black">You are here</h4>  
+  `);
+  const el = document.createElement('div');
+  el.className = 'custom-marker';
+  el.style.backgroundImage = 'url(person-svgrepo-com.png)'; // Replace 'your-icon-url.png' with the path to your custom icon
+  el.style.width = '50px'; // Adjust width and height as needed
+  el.style.height = '50px';
+  el.style.backgroundSize = '100%';
+
+  const marker = new Marker({
+    color: '#61dadb',
+    element: el,
+  }).setPopup(popup).setLngLat(center)
+
+  return marker
 }
