@@ -88,6 +88,7 @@ export const PlacesProvider = ({ children }: PropsWithChildren) => {
   const getRouteLocation = async (coords: [number, number]) => {
     if (!state.location) return;
 
+    // TODO: MIRAR SI SE PUEDE HACER UNA OPTIMIZACINO CON EL CONTEXT DE ROUTE
     const coordsString = [state.location, coords].join(';');
     console.log(coordsString);
     const { data } = await directionsApi.get<DirectionsResponse>(coordsString);
