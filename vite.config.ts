@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react-swc'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/mapbox-app-react/',
+  base: 'https://juanda15.github.io/mapbox-app-react/',
 })
