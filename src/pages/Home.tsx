@@ -1,12 +1,12 @@
 import { useContext } from 'react';
+import { PlacesContext, RouteContext } from '../context';
 import {
+  AddDirection,
   MapView,
   NavigateToUserLocation,
   SearchBar,
-  AddDirection,
 } from '../components';
 import { RouteSelector } from '../components/RouteSelector';
-import { PlacesContext, RouteContext } from '../context';
 
 export const HomePage = (): JSX.Element => {
   const { searchMode } = useContext(PlacesContext);

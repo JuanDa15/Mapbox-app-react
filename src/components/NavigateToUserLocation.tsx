@@ -1,14 +1,13 @@
 import { useContext } from 'react';
 import { LocaleDefineIcon } from '../icons';
-import { MapContext, PlacesContext } from '../context';
+import { MapContext } from '../context';
 
 export const NavigateToUserLocation = (): JSX.Element => {
-  const { isMapReady, navigateToPlace } = useContext(MapContext);
-  const { location } = useContext(PlacesContext);
+  const { isMapReady, navigateToPlace, userLocation } = useContext(MapContext);
 
   const handleClick = () => {
-    if (!location) return;
-    const [lng, lat] = location;
+    if (!userLocation) return;
+    const [lng, lat] = userLocation;
     navigateToPlace([lng, lat]);
   };
 

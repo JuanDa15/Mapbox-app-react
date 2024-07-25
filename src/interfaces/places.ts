@@ -3,6 +3,7 @@ import { Marker } from "mapbox-gl";
 import { LOCATION_ACTIONS } from "../reducers";
 import { getPlacesByQueryArgs } from "./API";
 import { Feature } from "./forwar-geolocation-response";
+import { Route } from "./directions-response";
 
 export interface IPlacesContextProps extends IPlacesState {
   getPlacesByQuery: (args: getPlacesByQueryArgs) => void;
@@ -11,12 +12,14 @@ export interface IPlacesContextProps extends IPlacesState {
 }
 
 export interface IPlacesState {
-  isLoading: boolean;
-  location: [number, number] | undefined;
   searchedPlaces: Feature[];
   isLoadingData: boolean;
   searchMode: boolean;
   markers: Marker[],
+  route: {
+    selectedRoute: Route | null,
+    coords: [number, number] | null
+  }
 }
 
 export interface LocationAction<T = any> extends Action<T> {

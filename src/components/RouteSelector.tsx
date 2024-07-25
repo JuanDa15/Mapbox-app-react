@@ -5,7 +5,7 @@ import { Route } from '../interfaces';
 export const RouteSelector = (): JSX.Element => {
   const { routes, activeRoute, selectActiveRoute } = useContext(RouteContext);
 
-  if (routes?.routes.length === 0) return <></>;
+  if (routes?.routes.length === 0 || !routes) return <></>;
 
   const handleClick = (route: Route) => {
     return () => {

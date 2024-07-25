@@ -8,7 +8,8 @@ interface Args {
   map: Map;
   route: Route,
   updateDirectionsMarker?: (value: Marker[]) => void,
-  drawMarkers?: boolean
+  drawMarkers?: boolean,
+  layerName: string,
 }
 
 export function updateMapRoute({
@@ -17,14 +18,14 @@ export function updateMapRoute({
   userLocation,
   route,
   updateDirectionsMarker,
-  drawMarkers = true
+  drawMarkers = true,
+  layerName,
 }: Args) {
   // Clear Previus state
-  if (map.getLayer('RouteString')) {
-    map.removeLayer('RouteString')
-    map.removeSource('RouteString')
+  if (map.getLayer(layerName)) {
+    map.removeSource(layerName)
+    map.removeLayer(layerName)
   }
-
 
   // Create Map Bounds
   const southWestCorner = new LngLat(userLocation[0], userLocation[1]);
@@ -50,7 +51,7 @@ export function updateMapRoute({
   const sourceData = getSourceData(route);
 
   // Set map features
-  map.addSource('RouteString', sourceData)
+  map.addSource(layerName, sourceData)
   map.fitBounds(bounds, {
     padding: {
       bottom: 200,
@@ -62,9 +63,9 @@ export function updateMapRoute({
 
   // Setup route line
   map.addLayer({
-    id: 'RouteString',
+    id: layerName,
     type: 'line',
-    source: 'RouteString',
+    source: layerName,
     layout: {
       'line-join': 'round',
       'line-cap': 'round',

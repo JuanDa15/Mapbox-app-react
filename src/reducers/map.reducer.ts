@@ -3,6 +3,7 @@ import { MapAction, MapState } from "../interfaces/map"
 
 export const MAP_ACTIONS = {
   SET_MAP: 'SET_MAP',
+  SET_LOCATION: 'SET_LOCATION',
 }
 
 export const MAP_REDUCER_ACTIONS = {
@@ -10,6 +11,10 @@ export const MAP_REDUCER_ACTIONS = {
     ...state,
     map: payload,
     isMapReady: true
+  }),
+  [MAP_ACTIONS.SET_LOCATION]: (state: MapState, payload: [number, number]): MapState => ({
+    ...state,
+    userLocation: payload
   }),
 }
 

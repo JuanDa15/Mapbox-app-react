@@ -6,26 +6,27 @@ import {
   useReducer,
 } from 'react';
 import { placesReducer } from '../reducers';
-import { createMarker, getLocation, updateMapRoute } from '../helpers';
+import { createMarker, updateMapRoute } from '../helpers';
 import {
-  DirectionsResponse,
   getPlacesByQueryArgs,
   IPlacesContextProps,
   IPlacesState,
 } from '../interfaces';
 import forwardSearchApi from '../API/forward-geolocation';
 import { ForwardGeolocationResponse } from '../interfaces';
-import directionsApi from '../API/directions';
 import { Marker } from 'mapbox-gl';
 import { MapContext } from './map';
+import { getRoutes } from '../services';
 
 const INITIAL_STATE: IPlacesState = {
-  isLoading: true,
-  location: undefined,
   searchedPlaces: [],
   isLoadingData: false,
   searchMode: false,
   markers: [],
+  route: {
+    coords: [0, 0],
+    selectedRoute: null,
+  },
 };
 
 export const PlacesContext = createContext<IPlacesContextProps>(
@@ -33,20 +34,8 @@ export const PlacesContext = createContext<IPlacesContextProps>(
 );
 
 export const PlacesProvider = ({ children }: PropsWithChildren) => {
-  const { map } = useContext(MapContext);
+  const { map, userLocation } = useContext(MapContext);
   const [state, dispatch] = useReducer(placesReducer, INITIAL_STATE);
-
-  useEffect(() => {
-    const initializeLocation = async () => {
-      const resp = await getLocation().catch(console.log);
-      dispatch({
-        type: 'SET_LOCATION',
-        payload: resp,
-      });
-    };
-
-    initializeLocation();
-  }, []);
 
   useEffect(() => {
     state.markers.forEach((marker) => marker.remove());
@@ -61,6 +50,21 @@ export const PlacesProvider = ({ children }: PropsWithChildren) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.searchedPlaces]);
 
+  useEffect(() => {
+    if (!state.route.selectedRoute) return;
+    if (!state.searchMode) return;
+
+    updateMapRoute({
+      addresses: [state.route.coords!],
+      map: map!,
+      route: state.route.selectedRoute!,
+      userLocation: userLocation!,
+      drawMarkers: false,
+      layerName: 'SearchRouteString',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.route.selectedRoute]);
+
   const getPlacesByQuery = async ({ q, limit = '5' }: getPlacesByQueryArgs) => {
     if (q.length === 0) {
       dispatch({ type: 'SET_SEARCHED_PLACES', payload: [] });
@@ -74,7 +78,7 @@ export const PlacesProvider = ({ children }: PropsWithChildren) => {
       params: {
         q,
         limit,
-        proximity: state.location?.join(','),
+        proximity: userLocation?.join(','),
       },
     });
 
@@ -82,26 +86,25 @@ export const PlacesProvider = ({ children }: PropsWithChildren) => {
   };
 
   const turnOffSearchMode = () => {
+    state.markers.forEach((marker) => marker.remove());
+    setMarkers([]);
+    map?.removeLayer('SearchRouteString');
+    map?.removeSource('SearchRouteString');
     dispatch({ type: 'TURN_OFF_SEARCH_MODE' });
   };
 
   const getRouteLocation = async (coords: [number, number]) => {
-    if (!state.location) return;
+    if (!userLocation) return;
 
-    // TODO: MIRAR SI SE PUEDE HACER UNA OPTIMIZACINO CON EL CONTEXT DE ROUTE
-    const coordsString = [state.location, coords].join(';');
-    console.log(coordsString);
-    const { data } = await directionsApi.get<DirectionsResponse>(coordsString);
+    const coordsString = [userLocation, coords].join(';');
+    const routes = await getRoutes(coordsString);
 
-    // TODO: Mostrar una alerta bonita
-    if (data.routes.length === 0) return alert('Route not found');
-
-    updateMapRoute({
-      addresses: [coords],
-      map: map!,
-      route: data.routes[0],
-      userLocation: state.location,
-      drawMarkers: false,
+    dispatch({
+      type: 'SET_ROUTE',
+      payload: {
+        selectedRoute: routes[0],
+        coords: coords,
+      },
     });
   };
 

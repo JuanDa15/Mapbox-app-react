@@ -1,12 +1,13 @@
-import { createContext, PropsWithChildren, useReducer } from 'react';
+import { createContext, PropsWithChildren, useEffect, useReducer } from 'react';
 import { mapReducer } from '../reducers';
 import { Map } from 'mapbox-gl';
 import { IMapContextProps, MapState } from '../interfaces';
-import { createUserMarker } from '../helpers';
+import { createUserMarker, getLocation } from '../helpers';
 
 const MAP_INITIAL_STATE: MapState = {
   map: undefined,
   isMapReady: false,
+  userLocation: undefined,
 };
 
 export const MapContext = createContext<IMapContextProps>(
@@ -15,6 +16,18 @@ export const MapContext = createContext<IMapContextProps>(
 
 export function MapProvider({ children }: PropsWithChildren) {
   const [state, dispatch] = useReducer(mapReducer, MAP_INITIAL_STATE);
+
+  useEffect(() => {
+    const initializeLocation = async () => {
+      const resp = await getLocation().catch(console.log);
+      dispatch({
+        type: 'SET_LOCATION',
+        payload: resp,
+      });
+    };
+
+    initializeLocation();
+  }, []);
 
   const navigateToPlace = ([lng, lat]: [number, number]) => {
     state.map!.flyTo({

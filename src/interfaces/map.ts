@@ -5,6 +5,7 @@ import { MAP_ACTIONS } from "../reducers";
 export interface MapState {
   map?: Map,
   isMapReady: boolean,
+  userLocation: [number, number] | undefined;
 }
 export interface IMapContextProps extends MapState {
   setMap: (map: Map) => void;
