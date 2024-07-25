@@ -8,6 +8,7 @@ import mapboxgl from 'mapbox-gl';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY as string;
 
+console.log(import.meta.env.VITE_MAPBOX_KEY);
 if (!navigator.geolocation) {
   alert('Geolocation is not supported by your browser');
   throw new Error('Geolocation is not supported by your browser');
