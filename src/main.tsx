@@ -6,8 +6,7 @@ import { MapProvider, PlacesProvider, RouteProvider } from './context';
 
 import mapboxgl from 'mapbox-gl';
 
-mapboxgl.accessToken =
-  'pk.eyJ1IjoianVhbmRhMTUiLCJhIjoiY2t6Z2NmOWRyMDNnMDJ2cWtmOHd2eHgzMyJ9.jKkK7iunABhyTJ0t8apN1w';
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY as string;
 
 if (!navigator.geolocation) {
   alert('Geolocation is not supported by your browser');
