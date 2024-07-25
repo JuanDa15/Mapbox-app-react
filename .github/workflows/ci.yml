@@ -26,6 +26,9 @@ jobs:
         env:
           VITE_MAPBOX_KEY: ${{ secrets.VITE_MAPBOX_KEY }}
 
+      - name: List build directory contents
+        run: ls -la build # Verify the contents of the build directory
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -54,6 +57,9 @@ jobs:
         with:
           name: docs
           path: docs
+
+      - name: List build directory contents after download
+        run: ls -la build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
