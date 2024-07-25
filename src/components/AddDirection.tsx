@@ -15,6 +15,7 @@ export const AddDirection = (): JSX.Element => {
   // TODO: optimize build with lazy load
   // TODO: MIRAR SI SE PUEDE CAMBIAR EL NOMBRE DE OUTPUT DEL DIST
   // TODO: CUANDO TENGO UNA RUTA CREADA CON EL MODO BUSQUEDA Y CIERRO EL MODO BUSQUEDA NO SE LIMPIA EL MAPA
+  // TODO: MOSTRAR LOADER EN PANTALLA CUANDO SE HACEN PETICIONES
 
   const handleClick = () => {
     searchMode && turnOffSearchMode();
