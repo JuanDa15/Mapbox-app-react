@@ -11,7 +11,6 @@ export const AddDirection = (): JSX.Element => {
 
   // Add MOuse follower with the this icon
   // TODO: add a way to create a petition to each center
-  // TODO:  Mover la key a los env
   // TODO: optimize build with lazy load
   // TODO: MIRAR SI SE PUEDE CAMBIAR EL NOMBRE DE OUTPUT DEL DIST
   // TODO: CUANDO TENGO UNA RUTA CREADA CON EL MODO BUSQUEDA Y CIERRO EL MODO BUSQUEDA NO SE LIMPIA EL MAPA
