@@ -1,9 +1,8 @@
-name: MAPS_APP_DEPLOY
-
+name: Deploy MAPS APP
 on:
   push:
     branches:
-      - deploy
+      - deploy # Adjust this branch name as needed for your deployment trigger
 
 jobs:
   build:
@@ -24,45 +23,34 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_MAPBOX_KEY: ${{ vars.VITE_MAPBOX_KEY }}
+          VITE_MAPBOX_KEY: ${{ secrets.VITE_MAPBOX_KEY }} # Replace with your environment variable
 
       - name: List build directory contents
-        run: ls -la docs # Verify the contents of the build directory
+        run: ls -la dist # Ensure the build output directory is correct
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: docs
-          path: docs
+          name: dist
+          path: dist
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/deploy'
+    if: github.ref == 'refs/heads/deploy' # Ensure this matches your deployment branch
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
-
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: docs
-          path: docs
-
-      - name: List build directory contents after download
-        run: ls -la docs
+          name: dist
+          path: dist
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs
+          publish_dir: dist # Ensure this matches your build output directory
