@@ -25,8 +25,9 @@ jobs:
         run: npm run build
         env:
           VITE_MAPBOX_KEY: ${{ secrets.VITE_MAPBOX_KEY }}
-        steps:
-          run: echo "${{ env.VITE_MAPBOX_KEY }} "
+
+      - name: 'test'
+        run: echo "${{ env.VITE_MAPBOX_KEY }} "
 
       - name: List build directory contents
         run: ls -la docs # Verify the contents of the build directory
